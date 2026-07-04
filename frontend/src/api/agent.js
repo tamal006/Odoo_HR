@@ -17,7 +17,16 @@ export const fetchCapacity = (dept, weeks = 8) => {
   return json(`/insights/capacity?${q}`);
 };
 export const agentHealth = async () => {
-  try { return await json('/health'); } catch { return { mcp_connected: false }; }
+  try {
+    const res = await json('/health');
+    if (res && res.status === 'ok') return res;
+  } catch { /* try direct fallback */ }
+  try {
+    const r = await fetch('http://localhost:8000/health');
+    return await r.json();
+  } catch {
+    return { mcp_connected: false };
+  }
 };
 
 // Streaming chat over the Vercel AI SDK data-stream protocol.

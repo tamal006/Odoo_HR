@@ -11,6 +11,7 @@ export default defineConfig({
       // AI agent (chat + predictive insights) → Python FastAPI agent
       "/agent": { target: "http://localhost:8000", changeOrigin: true },
       "/insights": { target: "http://localhost:8000", changeOrigin: true },
+      "/health": { target: "http://localhost:8000", changeOrigin: true },
     },
   },
 });
