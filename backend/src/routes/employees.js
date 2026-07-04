@@ -139,6 +139,10 @@ router.post(
 );
 
 const MOCK_EMPLOYEES = [
+  { id: 1, name: "Ananya Roy", email: "ananya.roy@company.test", department: "Engineering", departmentId: 10, jobPosition: "Backend Engineer", jobTitle: "Backend Engineer", workPhone: "+1 555-0001", mobilePhone: "+1 555-0002", avatar: null },
+  { id: 2, name: "Rohit Sen", email: "rohit.sen@company.test", department: "Engineering", departmentId: 10, jobPosition: "Frontend Engineer", jobTitle: "Frontend Engineer", workPhone: "+1 555-0003", mobilePhone: "+1 555-0004", avatar: null },
+  { id: 3, name: "Priya Nair", email: "priya.nair@company.test", department: "Human Resources", departmentId: 16, jobPosition: "HR Manager", jobTitle: "HR Manager", workPhone: "+1 555-0005", mobilePhone: "+1 555-0006", avatar: null },
+  { id: 4, name: "Kabir Malhotra", email: "kabir.malhotra@company.test", department: "Design", departmentId: 12, jobPosition: "Product Designer", jobTitle: "Product Designer", workPhone: "+1 555-0007", mobilePhone: "+1 555-0008", avatar: null },
   { id: 101, name: "Sophia Vance", email: "sophia.vance@company.com", department: "Engineering", departmentId: 10, jobPosition: "Senior Software Engineer", jobTitle: "Senior Software Engineer", workPhone: "+1 555-0101", mobilePhone: "+1 555-0102", avatar: null },
   { id: 102, name: "Marcus Vance", email: "marcus.v@company.com", department: "Product", departmentId: 11, jobPosition: "Product Manager", jobTitle: "Product Manager", workPhone: "+1 555-0103", mobilePhone: "+1 555-0104", avatar: null },
   { id: 103, name: "Elena Rostova", email: "elena.r@company.com", department: "Design", departmentId: 12, jobPosition: "Lead UI/UX Designer", jobTitle: "Lead Designer", workPhone: "+1 555-0105", mobilePhone: "+1 555-0106", avatar: null },

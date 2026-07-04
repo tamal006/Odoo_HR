@@ -119,10 +119,15 @@ router.get(
         domain,
         LEAVE_FIELDS,
         { order: "date_from desc", limit: 200 }
+      );
       let data = records.map(flatten);
       if (data.length < 3) {
         const now = Date.now();
         const MOCK_LEAVES = [
+          { id: 101, employeeId: 1, employeeName: "Ananya Roy", leaveType: "Paid Time Off", leaveTypeId: 1, dateFrom: "2026-07-14", dateTo: "2026-07-18", numberOfDays: 5, state: "confirm", stateLabel: "Pending", reason: "Family trip" },
+          { id: 102, employeeId: 2, employeeName: "Rohit Sen", leaveType: "Sick Leave", leaveTypeId: 2, dateFrom: "2026-07-06", dateTo: "2026-07-07", numberOfDays: 2, state: "confirm", stateLabel: "Pending", reason: "Fever" },
+          { id: 103, employeeId: 4, employeeName: "Kabir Malhotra", leaveType: "Paid Time Off", leaveTypeId: 1, dateFrom: "2026-08-01", dateTo: "2026-08-10", numberOfDays: 8, state: "confirm", stateLabel: "Pending", reason: "Annual vacation" },
+          { id: 104, employeeId: 3, employeeName: "Priya Nair", leaveType: "Paid Time Off", leaveTypeId: 1, dateFrom: "2026-06-20", dateTo: "2026-06-21", numberOfDays: 2, state: "validate", stateLabel: "Approved", reason: "Personal days" },
           { id: 301, employeeId: 101, employeeName: "Sophia Vance", leaveType: "Annual Leave", leaveTypeId: 1, dateFrom: new Date(now + 86400000 * 3).toISOString().slice(0, 10), dateTo: new Date(now + 86400000 * 6).toISOString().slice(0, 10), numberOfDays: 3, state: "confirm", stateLabel: "Pending", reason: "Family vacation" },
           { id: 302, employeeId: 102, employeeName: "Marcus Vance", leaveType: "Sick Time", leaveTypeId: 2, dateFrom: new Date(now + 86400000 * 2).toISOString().slice(0, 10), dateTo: new Date(now + 86400000 * 3).toISOString().slice(0, 10), numberOfDays: 1, state: "validate1", stateLabel: "First Approval", reason: "Medical checkup" },
           { id: 303, employeeId: 103, employeeName: "Elena Rostova", leaveType: "Parental Leave", leaveTypeId: 3, dateFrom: new Date(now + 86400000 * 10).toISOString().slice(0, 10), dateTo: new Date(now + 86400000 * 24).toISOString().slice(0, 10), numberOfDays: 14, state: "validate", stateLabel: "Approved", reason: "Maternity leave" },

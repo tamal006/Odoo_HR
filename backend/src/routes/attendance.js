@@ -105,17 +105,22 @@ router.get(
         domain,
         ATTENDANCE_FIELDS,
         { order: "check_in desc", limit: 200 }
+      );
       let data = records.map(flatten);
       if (data.length < 5) {
         const todayStr = new Date().toISOString().slice(0, 10);
         const yestStr = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
         const MOCK_ATTENDANCE = [
-          { id: 201, employeeId: 101, employeeName: "Sophia Vance", checkIn: todayStr + " 08:45:00", checkOut: null, workedHours: null, status: "Working" },
-          { id: 202, employeeId: 102, employeeName: "Marcus Vance", checkIn: todayStr + " 09:02:00", checkOut: null, workedHours: null, status: "Working" },
-          { id: 203, employeeId: 103, employeeName: "Elena Rostova", checkIn: todayStr + " 08:30:00", checkOut: null, workedHours: null, status: "Working" },
-          { id: 204, employeeId: 104, employeeName: "Liam Thorne", checkIn: yestStr + " 08:00:00", checkOut: yestStr + " 17:00:00", workedHours: 9.0, status: "Present" },
-          { id: 205, employeeId: 105, employeeName: "Maya Lin", checkIn: todayStr + " 09:15:00", checkOut: null, workedHours: null, status: "Working" },
-          { id: 206, employeeId: 106, employeeName: "David Kim", checkIn: todayStr + " 08:50:00", checkOut: null, workedHours: null, status: "Working" },
+          { id: 201, employeeId: 1, employeeName: "Ananya Roy", checkIn: todayStr + " 09:05:00", checkOut: null, workedHours: null, status: "Working" },
+          { id: 202, employeeId: 2, employeeName: "Rohit Sen", checkIn: todayStr + " 10:15:00", checkOut: null, workedHours: null, status: "Working" },
+          { id: 203, employeeId: 3, employeeName: "Priya Nair", checkIn: todayStr + " 08:50:00", checkOut: null, workedHours: null, status: "Working" },
+          { id: 204, employeeId: 4, employeeName: "Kabir Malhotra", checkIn: todayStr + " 09:00:00", checkOut: null, workedHours: null, status: "Working" },
+          { id: 205, employeeId: 101, employeeName: "Sophia Vance", checkIn: todayStr + " 08:45:00", checkOut: null, workedHours: null, status: "Working" },
+          { id: 206, employeeId: 102, employeeName: "Marcus Vance", checkIn: todayStr + " 09:02:00", checkOut: null, workedHours: null, status: "Working" },
+          { id: 207, employeeId: 103, employeeName: "Elena Rostova", checkIn: todayStr + " 08:30:00", checkOut: null, workedHours: null, status: "Working" },
+          { id: 208, employeeId: 104, employeeName: "Liam Thorne", checkIn: yestStr + " 08:00:00", checkOut: yestStr + " 17:00:00", workedHours: 9.0, status: "Present" },
+          { id: 209, employeeId: 105, employeeName: "Maya Lin", checkIn: todayStr + " 09:15:00", checkOut: null, workedHours: null, status: "Working" },
+          { id: 210, employeeId: 106, employeeName: "David Kim", checkIn: todayStr + " 08:50:00", checkOut: null, workedHours: null, status: "Working" },
         ];
         data = [...data, ...MOCK_ATTENDANCE];
       }
