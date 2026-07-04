@@ -31,7 +31,7 @@ export default async function OverViewLayout({
 
   if (role === 'Employee') {
     return (
-      <PageContainer scrollable>
+      <PageContainer>
         <EmployeeDashboard />
       </PageContainer>
     );
