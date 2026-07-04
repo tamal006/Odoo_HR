@@ -2,13 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import {
-  getLeaves,
-  patchLeave,
-  getEmployees,
-  type LeaveRecord,
-  type Employee
-} from '@/lib/api';
+import { getLeaves, patchLeave, getEmployees, type LeaveRecord, type Employee } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 
 const columns = ['Pending', 'Approved', 'Rejected'];
@@ -48,7 +42,7 @@ export function LeaveApprovalBoard() {
     setLeaves((prev) => prev.map((leave) => (leave.id === id ? { ...leave, status } : leave)));
 
     // Actual API update
-    await updateLeaveStatus(id, status);
+    await patchLeave(id, status);
   };
 
   const getEmpName = (empId: string) =>
