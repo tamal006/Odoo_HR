@@ -310,6 +310,7 @@ async def _run_agent_loop(
                 messages.append({
                     "role": "tool",
                     "tool_call_id": tc.id,
+                    "name": tool_name,
                     "content": f"DENIED by server RBAC: {denial}",
                 })
                 audit_trail.log(AuditEntry(
@@ -346,6 +347,7 @@ async def _run_agent_loop(
                     messages.append({
                         "role": "tool",
                         "tool_call_id": tc.id,
+                        "name": tool_name,
                         "content": (
                             f"[APPROVAL COPILOT — DO NOT EXECUTE YET]\n"
                             f"{copilot_block}\n\n"
@@ -387,6 +389,7 @@ async def _run_agent_loop(
             messages.append({
                 "role": "tool",
                 "tool_call_id": tc.id,
+                "name": tool_name,
                 "content": result_text,
             })
 
@@ -430,6 +433,7 @@ async def agent_chat(request: Request):
             async for chunk in _run_agent_loop(req, session_id):
                 yield chunk
         except Exception as exc:  # noqa: BLE001
+            import traceback; traceback.print_exc()
             yield _ds_error(str(exc))
 
     return StreamingResponse(

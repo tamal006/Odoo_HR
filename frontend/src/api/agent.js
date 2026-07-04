@@ -54,7 +54,7 @@ export async function streamChat(payload, onDelta, onError) {
       let ev;
       try { ev = JSON.parse(line.slice(5).trim()); } catch { continue; }
       if (ev.type === 'text-delta') { full += ev.delta || ''; onDelta(full); }
-      else if (ev.type === 'error') { onError?.(ev.error); }
+      else if (ev.type === 'error') { onError?.(ev.error); throw new Error(ev.error); }
     }
   }
   return full;

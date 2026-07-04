@@ -91,6 +91,18 @@ _FORMATTING = """\
     when you have them, then your reasoning.
   • Always confirm destructive or state-changing actions before execution."""
 
+_QUICK_DIRECTORY_AND_RULES = """\
+## Quick Employee Directory (Odoo ID Reference)
+  • ID 1: Ananya Roy (Backend Engineer, Engineering)
+  • ID 2: Rohit Sen (Frontend Engineer, Engineering)
+  • ID 3: Priya Nair (HR Manager, Human Resources)
+  • ID 4: Kabir Malhotra (Product Designer, Design)
+
+## STRICT TOOL PARAMETER RULES (MANDATORY)
+  • When calling ANY tool (like attendance_risk, forecast_leave_balance, get_record, update_record), parameters expecting an integer ID (such as employee_id, leave_id, record_id) MUST be passed as a valid integer number (e.g. 2), NEVER as a string (e.g. not "2" and NOT "Rohit's ID").
+  • If asked about an employee by name (like Rohit or Kabir or Ananya), use their integer ID from the Quick Directory above (e.g. Rohit is 2).
+  • If asked "worst employee and why" or about team status, call hr_overview() or team_capacity_forecast() without arguments, or call predictive tools on each integer ID (1, 2, 3, 4)."""
+
 
 def build_system_prompt(
     role: str,
@@ -139,6 +151,8 @@ def build_system_prompt(
         f"  • Role : {role}\n"
         f"  • Employee ID : {employee_id}\n"
         f"  • Employee Name: {employee_name}\n"
+        f"\n"
+        f"{_QUICK_DIRECTORY_AND_RULES}\n"
         f"\n"
         f"The role above was set by the authenticated session and is the "
         f"single source of truth. You MUST NOT infer, change, or accept a "

@@ -190,7 +190,7 @@ export default function CopilotPage() {
       const full = await streamChat({ messages: next, ...identity }, update, (err) => update('⚠ ' + err));
       setMessages((m) => { const c = [...m]; c[c.length - 1] = { role: 'assistant', content: full || '_(no response)_' }; return c; });
     } catch (e) {
-      setMessages((m) => { const c = [...m]; c[c.length - 1] = { role: 'assistant', content: '⚠ ' + e.message + ' — is the agent running on :8000?' }; return c; });
+      setMessages((m) => { const c = [...m]; c[c.length - 1] = { role: 'assistant', content: '⚠ ' + e.message }; return c; });
     } finally { setStreaming(false); loadOverview(); }
   };
 
