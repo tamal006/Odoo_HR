@@ -134,16 +134,16 @@ async function main() {
     console.log(`   ✔  Created employee [${id}] ${def.name}`);
   }
 
-  // ── 3.5. Update Auto-Created Contracts (hr.version) ──────────────────────
-  console.log("\n── Updating auto-created contracts (hr.version) ───────────\n");
+  // ── 3.5. Update Auto-Created Contracts (hr.contract) ──────────────────────
+  console.log("\n── Updating auto-created contracts (hr.contract) ───────────\n");
   const baseWages = [50000, 75000, 65000, 45000, 55000];
   for (let i = 0; i < employeeIds.length; i++) {
     const empId = employeeIds[i];
     const wage = baseWages[i];
     try {
-      const contracts = await odooClient.searchRead("hr.version", [["employee_id", "=", empId]], ["id"]);
+      const contracts = await odooClient.searchRead("hr.contract", [["employee_id", "=", empId]], ["id"]);
       if (contracts.length > 0) {
-        await odooClient.write("hr.version", contracts[0].id, { wage });
+        await odooClient.write("hr.contract", contracts[0].id, { wage });
         console.log(`   ✔  Set wage = ${wage} for employee ${empId} (Contract ${contracts[0].id})`);
       }
     } catch (err) {

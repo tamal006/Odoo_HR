@@ -56,7 +56,7 @@ async function main() {
     "hr.attendance",
     "hr.leave",
     "hr.work.entry.type",
-    "hr.version",
+    "hr.contract",
     "hr.payslip",
   ];
 
