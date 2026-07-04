@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import {
   getLeaves,
-  updateLeaveStatus,
+  patchLeave,
   getEmployees,
   type LeaveRecord,
   type Employee
