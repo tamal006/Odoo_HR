@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Odoo HR · Console</title>
+<style>
+:root{
+  --bg:#0f1116; --sidebar:#0c0e13; --panel:#151822; --raised:#1a1e29; --inset:#12141b;
+  --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.12);
+  --ink:#e9ecf3; --dim:#a2a9ba; --mut:#6b7284;
+  --accent:#7dd3fc; --accent2:#38bdf8; --accent-ink:#04121c;
+  --ok:#45e0a0; --warn:#f5b74a; --danger:#ff6b81;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--bg);color:var(--ink);height:100vh;overflow:hidden;font-size:14px;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.09);border-radius:8px;border:2px solid transparent;background-clip:content-box}
+button{font-family:inherit;cursor:pointer}
+
+.app{display:grid;grid-template-columns:252px 1fr;height:100vh}
+
+/* ---------- sidebar (calm, minimal) ---------- */
+.side{background:var(--sidebar);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:14px 12px}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 8px 14px}
+.brand .m{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#afe4ff,#38bdf8);display:grid;place-items:center;color:#04121c;font-weight:800;font-size:13px}
+.brand b{font-size:14px;letter-spacing:-.2px}
+.newchat{display:flex;align-items:center;gap:9px;width:100%;padding:9px 11px;border:1px solid var(--line2);background:transparent;color:var(--ink);border-radius:9px;font-size:13.5px;font-weight:550;transition:background .15s,border-color .15s}
+.newchat:hover{background:var(--raised);border-color:rgba(125,211,252,.4)}
+.nav{margin-top:16px;display:flex;flex-direction:column;gap:2px}
+.nav .lbl{font-size:10.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--mut);padding:8px 10px 5px}
+.nav a{display:flex;align-items:center;gap:11px;padding:8px 10px;border-radius:8px;color:var(--dim);font-size:13.5px;font-weight:500;transition:background .14s,color .14s}
+.nav a svg{width:17px;height:17px;opacity:.8}
+.nav a:hover{background:var(--raised);color:var(--ink)}
+.nav a.on{background:var(--raised);color:var(--ink)}
+.nav a.on svg{color:var(--accent);opacity:1}
+.side-foot{margin-top:auto;border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.idbox{display:flex;align-items:center;gap:9px;padding:2px 4px}
+.idbox .av{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#afe4ff,#38bdf8);color:#04121c;display:grid;place-items:center;font-weight:700;font-size:11px}
+.idbox b{font-size:12.5px;display:block;line-height:1.3}
+.idbox span{font-size:11px;color:var(--mut)}
+.selrow{display:flex;gap:6px}
+.selrow select{flex:1;font:inherit;font-size:12px;padding:6px 7px;border-radius:7px;border:1px solid var(--line);background:var(--inset);color:var(--ink)}
+
+/* ---------- main ---------- */
+.main{min-width:0;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:54px;flex:none;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 22px;gap:12px}
+.topbar h1{font-size:14.5px;font-weight:600;letter-spacing:-.2px}
+.topbar .src{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:12px;color:var(--dim);font-family:var(--mono)}
+.topbar .src i{width:7px;height:7px;border-radius:50%;background:var(--mut);display:inline-block}
+.topbar .src i.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+
+.view{flex:1;min-height:0;display:none}
+.view.on{display:flex;flex-direction:column}
+
+/* ---------- assistant (chat-first, calm) ---------- */
+#log{flex:1;overflow-y:auto;padding:30px 0}
+.thread{max-width:720px;margin:0 auto;padding:0 24px;display:flex;flex-direction:column;gap:26px}
+.turn{display:flex;flex-direction:column;gap:7px}
+.turn .who{font-size:11.5px;font-weight:700;letter-spacing:.3px;color:var(--mut);text-transform:uppercase}
+.turn.u .bubble{align-self:flex-start;background:var(--raised);border:1px solid var(--line);border-radius:12px;padding:11px 15px;font-size:14px;line-height:1.55;max-width:100%}
+.turn.a .body{font-size:14.5px;line-height:1.7;color:var(--ink)}
+.turn.a .body blockquote{margin:10px 0;padding:2px 0 2px 14px;border-left:2px solid var(--accent);color:var(--dim);font-size:13.5px}
+.turn.a .body code{font-family:var(--mono);font-size:90%;background:var(--inset);padding:1.5px 6px;border-radius:5px}
+.turn.a .body table{border-collapse:collapse;margin:12px 0;font-size:13px;width:100%}
+.turn.a .body th,.turn.a .body td{border:1px solid var(--line2);padding:7px 11px;text-align:left}
+.turn.a .body th{background:var(--inset);font-weight:600}
+.turn.err{color:var(--danger);font-size:13px}
+.cursor{display:inline-block;width:7px;height:15px;background:var(--accent);border-radius:1px;vertical-align:text-bottom;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+.hello{max-width:720px;margin:auto;text-align:center;padding:0 24px}
+.hello h2{font-size:26px;font-weight:650;letter-spacing:-.6px;margin-bottom:10px}
+.hello p{color:var(--dim);font-size:14.5px;line-height:1.6;max-width:46ch;margin:0 auto 24px}
+.suggest{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left}
+@media(max-width:640px){.suggest{grid-template-columns:1fr}}
+.suggest button{padding:13px 15px;border:1px solid var(--line);background:var(--panel);border-radius:11px;color:var(--dim);font-size:13px;line-height:1.4;transition:border-color .15s,color .15s}
+.suggest button:hover{border-color:rgba(125,211,252,.45);color:var(--ink)}
+
+.composer{flex:none;padding:14px 0 20px;border-top:1px solid var(--line);background:linear-gradient(180deg,transparent,var(--bg) 40%)}
+.composer .in{max-width:720px;margin:0 auto;padding:0 24px;display:flex;gap:10px;align-items:flex-end}
+#box{flex:1;font:inherit;font-size:14.5px;padding:13px 16px;border:1px solid var(--line2);background:var(--panel);color:var(--ink);border-radius:13px;resize:none;max-height:150px;line-height:1.5}
+#box:focus{outline:none;border-color:var(--accent)}
+#send{width:44px;height:46px;border:0;border-radius:12px;background:linear-gradient(135deg,#afe4ff,#38bdf8);color:#04121c;display:grid;place-items:center;transition:filter .15s}
+#send:hover{filter:brightness(1.06)} #send:disabled{opacity:.5}
+
+/* ---------- insights / audit (clean, minimal) ---------- */
+.scroll{flex:1;overflow-y:auto;padding:24px}
+.wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.card{border:1px solid var(--line);border-radius:14px;background:var(--panel);padding:18px 20px}
+.card .h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.card .h h3{font-size:14px;font-weight:600;letter-spacing:-.2px}
+.card .h .r{margin-left:auto;display:flex;gap:8px;align-items:center}
+.card .h select{font:inherit;font-size:12px;padding:5px 8px;border-radius:7px;border:1px solid var(--line);background:var(--inset);color:var(--ink)}
+.tbtn{font-size:12px;color:var(--dim);background:var(--inset);border:1px solid var(--line);border-radius:7px;padding:5px 10px}
+.tbtn:hover{color:var(--ink);border-color:var(--line2)}
+.note{font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+@media(max-width:820px){.grid2{grid-template-columns:1fr}}
+
+.tl{display:flex;gap:6px;align-items:flex-end;height:130px}
+.tl .w{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.tl .w .c{font-size:11px;font-weight:700;color:var(--mut);height:14px;font-variant-numeric:tabular-nums}
+.tl .w .b{width:100%;min-height:5px;height:0;border-radius:4px 4px 2px 2px;transition:height .8s cubic-bezier(.22,1,.36,1)}
+.tl .w .l{font-size:10px;color:var(--mut)}
+.legend{display:flex;gap:14px;margin-top:12px;font-size:11.5px;color:var(--mut)}
+.legend i{width:8px;height:8px;border-radius:2px;display:inline-block;margin-right:5px}
+
+.tag{font-size:11px;font-weight:600;padding:2px 9px;border-radius:6px;text-transform:capitalize}
+.tag.ok{background:rgba(69,224,160,.12);color:var(--ok)} .tag.warn{background:rgba(245,183,74,.14);color:var(--warn)} .tag.danger{background:rgba(255,107,129,.14);color:var(--danger)} .tag.accent{background:rgba(125,211,252,.14);color:var(--accent)}
+
+table.people{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+table.people th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.4px;color:var(--mut);font-weight:700;padding:0 10px 10px}
+table.people td{padding:11px 10px;border-top:1px solid var(--line)}
+table.people tr{cursor:pointer}
+table.people tbody tr:hover{background:var(--raised)}
+.who2{display:flex;align-items:center;gap:10px}
+.who2 .av{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#afe4ff,#38bdf8);color:#04121c;display:grid;place-items:center;font-weight:700;font-size:11px}
+.who2 small{display:block;color:var(--mut);font-size:11px}
+.gg{display:flex;align-items:center;gap:8px} .gg .bar{width:72px;height:7px;border-radius:6px;background:var(--inset);overflow:hidden} .gg .bar i{display:block;height:100%;border-radius:6px}
+.gg b{font-variant-numeric:tabular-nums;font-size:12.5px}
+
+.snap{border:1px solid var(--line);border-radius:12px;padding:15px 17px;margin-bottom:12px}
+.snap .t{display:flex;align-items:center;font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.3px;font-weight:600}
+.snap .t .tag{margin-left:auto}
+.snap .big{font-size:28px;font-weight:700;letter-spacing:-1px;margin:8px 0 2px;font-variant-numeric:tabular-nums}
+.snap .big small{font-size:12px;font-weight:400;color:var(--mut)}
+.snap .d{font-size:12.5px;color:var(--dim);line-height:1.5;margin-top:6px}
+.snap .warn-l{font-size:12.5px;color:var(--danger);font-weight:600;margin-top:5px}
+
+.att{display:flex;align-items:center;gap:11px;padding:10px 0;border-top:1px solid var(--line)}
+.att:first-child{border-top:0}
+.att .av{width:30px;height:30px;border-radius:8px;background:var(--inset);display:grid;place-items:center;font-size:11px;font-weight:700;color:var(--dim)}
+.att .m b{font-size:13px} .att .m small{display:block;color:var(--mut);font-size:11.5px}
+.att .tag{margin-left:auto}
+
+.aud{border:1px solid var(--line);border-radius:11px;padding:13px 15px;margin-bottom:9px;display:flex;gap:12px}
+.aud .ic{width:28px;height:28px;border-radius:8px;background:rgba(125,211,252,.12);color:var(--accent);display:grid;place-items:center;flex:none;font-family:var(--mono);font-size:15px;font-weight:700}
+.aud .ic.e{background:rgba(255,107,129,.14);color:var(--danger)}
+.aud .b{min-width:0;flex:1}
+.aud .b .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.aud .b .top b{font-family:var(--mono);font-size:13px}
+.aud .b .top .ts{margin-left:auto;font-size:11px;color:var(--mut);font-family:var(--mono)}
+.aud .b .s{font-size:12.5px;color:var(--dim);margin-top:4px}
+.aud .b .a{font-family:var(--mono);font-size:11.5px;color:var(--mut);margin-top:4px;background:var(--inset);padding:6px 9px;border-radius:7px;overflow-wrap:anywhere}
+.empty{color:var(--mut);font-size:13px;text-align:center;padding:30px}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <div class="brand"><div class="m">◧</div><b>Odoo HR</b></div>
+    <button class="newchat" id="newchat">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      New chat
+    </button>
+    <nav class="nav">
+      <div class="lbl">Workspace</div>
+      <a data-v="assistant" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>Assistant</a>
+      <a data-v="insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 15 4-5 3 3 4-6"/></svg>Insights</a>
+      <a data-v="audit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h11"/></svg>Audit</a>
+    </nav>
+    <div class="side-foot">
+      <div class="idbox"><div class="av" id="idav">PN</div><div><b id="idname">Priya Nair</b><span id="idrole">admin</span></div></div>
+      <div class="selrow">
+        <select id="emp"></select>
+        <select id="role"><option value="admin">Admin</option><option value="employee">Employee</option></select>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h1 id="ptitle">Assistant</h1>
+      <div class="src"><i id="dot"></i><span id="srclabel">connecting…</span></div>
+    </div>
+
+    <!-- Assistant -->
+    <section class="view on" id="v-assistant">
+      <div id="log"></div>
+      <div class="composer"><div class="in">
+        <textarea id="box" rows="1" placeholder="Message the Odoo HR copilot…"></textarea>
+        <button id="send"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button>
+      </div></div>
+    </section>
+
+    <!-- Insights -->
+    <section class="view" id="v-insights"><div class="scroll"><div class="wrap">
+      <div class="card">
+        <div class="h"><h3>Team capacity forecast</h3><div class="r"><select id="dept"><option value="">All departments</option><option>Engineering</option><option>Design</option><option>Human Resources</option></select></div></div>
+        <div class="note" id="in-note"></div>
+        <div class="tl" id="in-tl"></div>
+        <div class="legend"><span><i style="background:var(--ok)"></i>Healthy</span><span><i style="background:var(--warn)"></i>Watch</span><span><i style="background:var(--danger)"></i>Understaffed</span></div>
+      </div>
+      <div class="grid2">
+        <div class="card">
+          <div class="h"><h3>Workforce risk</h3></div>
+          <table class="people"><thead><tr><th>Employee</th><th>Attendance risk</th><th>Leave</th></tr></thead><tbody id="people"></tbody></table>
+        </div>
+        <div class="card">
+          <div class="h"><h3>AI snapshot</h3><div class="r"><span class="tag accent" id="snapname">—</span></div></div>
+          <div id="snap"></div>
+        </div>
+      </div>
+    </div></div></section>
+
+    <!-- Audit -->
+    <section class="view" id="v-audit"><div class="scroll"><div class="wrap">
+      <div class="card">
+        <div class="h"><h3>Agent audit trail</h3><div class="r"><button class="tbtn" id="clr">Clear</button></div></div>
+        <div id="audit"><div class="empty">No tool calls yet.</div></div>
+      </div>
+    </div></div></section>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const ini=n=>(n||'?').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+
+// identity
+const RD={admin:{id:3,name:'Priya Nair'},employee:{id:1,name:'Ananya Roy'}};
+let PEOPLE=[];
+const idn=()=>({role:$('#role').value,employee_id:+$('#emp').value||0,employee_name:$('#emp').selectedOptions[0]?.textContent||'User'});
+function syncId(){const i=idn();$('#idname').textContent=i.employee_name;$('#idrole').textContent=i.role;$('#idav').textContent=ini(i.employee_name);renderSuggest();}
+$('#role').onchange=()=>{const d=RD[$('#role').value];if(d&&PEOPLE.length)$('#emp').value=d.id;syncId();};
+$('#emp').onchange=()=>{syncId();if(cur==='insights')loadEmp($('#emp').value);};
+
+// router
+const T={assistant:'Assistant',insights:'Insights',audit:'Audit'};
+let cur='assistant';
+function go(v){cur=v;$$('.nav a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));$$('.view').forEach(s=>s.classList.toggle('on',s.id==='v-'+v));$('#ptitle').textContent=T[v];
+  if(v==='insights')loadInsights();if(v==='audit')loadAudit();if(v==='assistant')setTimeout(()=>$('#box').focus(),30);}
+$$('.nav a').forEach(a=>a.onclick=()=>go(a.dataset.v));
+
+// helpers
+const rc=r=>r==='understaffed'?'var(--danger)':r==='watch'?'var(--warn)':'var(--ok)';
+const bc=s=>s==null?'var(--mut)':s<25?'var(--ok)':s<50?'#e6c34a':s<75?'var(--warn)':'var(--danger)';
+const sp=s=>s==='over_pace'?'danger':s==='under_utilising'?'warn':'ok';
+function timeline(el,weeks){el.innerHTML='';(weeks||[]).forEach((w,i)=>{const off=w.on_leave_confirmed+w.on_leave_pending;const d=document.createElement('div');d.className='w';d.title=`${w.label}: ${w.coverage_pct}% covered`;d.innerHTML=`<div class="c">${off||''}</div><div class="b" style="background:${rc(w.risk)}"></div><div class="l">${(w.label||'').split(' ')[1]||''}</div>`;el.appendChild(d);const b=d.querySelector('.b');setTimeout(()=>b.style.height=Math.max(6,w.coverage_pct)+'%',50+i*50);});}
+
+// insights
+async function loadInsights(){loadCap();loadPeople();loadEmp($('#emp').value);}
+$('#dept').onchange=loadCap;
+async function loadCap(){const dept=$('#dept').value;try{const d=await(await fetch('/insights/capacity?weeks=8'+(dept?'&department_id='+encodeURIComponent(dept):''))).json();if(d.error)throw 0;$('#in-note').textContent=d.narrative||'';timeline($('#in-tl'),d.weeks);}catch{$('#in-note').textContent='Insights need the predictive tools (bundled).';$('#in-tl').innerHTML='';}}
+async function loadOverview(){try{const d=await(await fetch('/insights/overview')).json();if(d.people?.length&&!PEOPLE.length){PEOPLE=d.people;$('#emp').innerHTML=d.people.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');$('#emp').value=RD[$('#role').value].id;syncId();}}catch{}}
+function loadPeople(){const tb=$('#people');if(!PEOPLE.length){tb.innerHTML='<tr><td colspan=3 class=empty>Loading…</td></tr>';return;}tb.innerHTML='';PEOPLE.forEach(p=>{const c=bc(p.attendance_score),s=p.attendance_score??0;const tr=document.createElement('tr');tr.onclick=()=>{$('#emp').value=p.id;syncId();loadEmp(p.id);};tr.innerHTML=`<td><div class="who2"><div class="av">${ini(p.name)}</div><div><b>${esc(p.name)}</b><small>${esc(p.department_id)}</small></div></div></td><td><div class="gg"><div class="bar"><i style="width:${s}%;background:${c}"></i></div><b style="color:${c}">${p.attendance_score??'—'}</b></div></td><td><span class="tag ${sp(p.balance_status)}">${(p.balance_status||'n/a').replace(/_/g,' ')}</span></td>`;tb.appendChild(tr);});}
+async function loadEmp(id){id=id||$('#emp').value;const p=PEOPLE.find(x=>x.id==id);$('#snapname').textContent=p?p.name:'#'+id;try{const d=await(await fetch(`/insights/employee/${id}`)).json();const b=d.balance_forecast||{},a=d.attendance_risk||{},as=a.score==null?0:a.score,ac=bc(a.score);$('#snap').innerHTML=`<div class="snap"><div class="t">Leave forecast<span class="tag ${sp(b.status)}">${(b.status||'n/a').replace(/_/g,' ')}</span></div><div class="big">${b.projected_remaining_eoy??'—'}<small> days · year-end</small></div>${b.exhaustion_date?`<div class="warn-l">Projected to run out ~${b.exhaustion_date}</div>`:''}<div class="d">${esc(b.narrative||'')}</div></div><div class="snap"><div class="t">Attendance risk<span class="tag" style="background:rgba(125,211,252,.12);color:${ac}">${a.label||'n/a'}</span></div><div class="big" style="color:${ac}">${a.score??'—'}<small style="color:var(--mut)"> / 100</small></div><div class="gg" style="margin:8px 0"><div class="bar" style="width:100%"><i style="width:${as}%;background:${ac}"></i></div></div><div class="d">${esc(a.narrative||'No attendance data.')}</div></div>`;}catch{$('#snap').innerHTML='<div class=empty>No snapshot.</div>';}}
+
+// audit
+async function loadAudit(){try{const data=await(await fetch('/agent/audit')).json();const el=$('#audit');if(!data.length){el.innerHTML='<div class="empty">No tool calls yet.</div>';return;}el.innerHTML='';data.slice().reverse().forEach(e=>{const d=document.createElement('div');d.className='aud';let t='';if(e.requires_confirmation)t+='<span class="tag warn">needs confirm</span>';if(e.confirmed_by)t+=`<span class="tag ok">confirmed · ${esc(e.confirmed_by)}</span>`;if(e.is_error)t+='<span class="tag danger">error</span>';const ts=e.timestamp?e.timestamp.replace('T',' ').slice(0,19):'';d.innerHTML=`<div class="ic ${e.is_error?'e':''}">${e.is_error?'!':'·'}</div><div class="b"><div class="top"><b>${esc(e.tool_name)}</b>${t}<span class="ts">${ts}</span></div>${e.request_summary?`<div class="s">${esc(e.request_summary)}</div>`:''}<div class="a">${esc(JSON.stringify(e.tool_args))}</div></div>`;el.appendChild(d);});}catch{}}
+$('#clr').onclick=async()=>{try{await fetch('/agent/audit',{method:'DELETE'});loadAudit();}catch{}};
+
+// chat
+const SUG={admin:['Approve leave request 101 for Ananya','Which weeks are we understaffed?','Preview the impact of approving leave 101','Is Rohit at risk of burnout?'],employee:["What's my leave balance forecast?",'Submit leave for next Monday','Show my attendance pattern']};
+function renderSuggest(){if(history.length)return;const s=SUG[$('#role').value]||SUG.employee;$('#log').innerHTML=`<div class="hello"><h2>How can I help, ${esc(idn().employee_name.split(' ')[0])}?</h2><p>I read your Odoo HR through MCP — leave, attendance, contracts — and never change a record without your confirmation.</p><div class="suggest">${s.map(x=>`<button>${esc(x)}</button>`).join('')}</div></div>`;$$('.suggest button').forEach(b=>b.onclick=()=>send(b.textContent));}
+let history=[],streaming=false;
+function turn(cls){const wasHello=$('.hello');if(wasHello)$('#log').innerHTML='<div class="thread"></div>';let th=$('.thread');if(!th){th=document.createElement('div');th.className='thread';$('#log').appendChild(th);}const d=document.createElement('div');d.className='turn '+cls;th.appendChild(d);$('#log').scrollTop=1e9;return d;}
+function inl(s){return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/`([^`]+)`/g,'<code>$1</code>');}
+function md(src){const L=esc(src).split('\n'),o=[];let i=0;while(i<L.length){const l=L[i];if(/^\s*\|.*\|\s*$/.test(l)&&i+1<L.length&&/^\s*\|[\s:|-]+\|\s*$/.test(L[i+1])){const rows=[];while(i<L.length&&/^\s*\|.*\|\s*$/.test(L[i]))rows.push(L[i++]);const c=r=>r.trim().replace(/^\||\|$/g,'').split('|').map(x=>x.trim());let t='<table><thead><tr>'+c(rows[0]).map(h=>`<th>${h}</th>`).join('')+'</tr></thead><tbody>';rows.slice(2).forEach(r=>t+='<tr>'+c(r).map(d=>`<td>${d}</td>`).join('')+'</tr>');o.push(t+'</tbody></table>');continue;}if(/^\s*&gt;\s?/.test(l)){o.push('<blockquote>'+inl(l.replace(/^\s*&gt;\s?/,''))+'</blockquote>');i++;continue;}o.push(inl(l));i++;}return o.join('\n').replace(/\n(?!<)/g,'<br>');}
+async function send(text){const q=(text??$('#box').value).trim();if(!q||streaming)return;$('#box').value='';$('#box').style.height='auto';
+  const u=turn('u');u.innerHTML=`<div class="who">You</div><div class="bubble">${esc(q)}</div>`;history.push({role:'user',content:q});
+  streaming=true;$('#send').disabled=true;
+  const a=turn('a');a.innerHTML='<div class="who">Copilot</div><div class="body"><span class="cursor"></span></div>';const body=a.querySelector('.body');let acc='';
+  try{const res=await fetch('/agent/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history,...idn()})});
+    const rd=res.body.getReader(),dec=new TextDecoder();let buf='';
+    while(true){const{value,done}=await rd.read();if(done)break;buf+=dec.decode(value,{stream:true});let nl;while((nl=buf.indexOf('\n'))>=0){const ln=buf.slice(0,nl).trim();buf=buf.slice(nl+1);if(!ln.startsWith('data:'))continue;let ev;try{ev=JSON.parse(ln.slice(5).trim());}catch{continue;}if(ev.type==='text-delta'){acc+=ev.delta||'';body.innerHTML=md(acc)+'<span class="cursor"></span>';$('#log').scrollTop=1e9;}else if(ev.type==='error'){a.className='turn err';body.innerHTML='⚠ '+esc(ev.error);}}}
+    if(a.className!=='turn err')body.innerHTML=md(acc)||'<em>(no response)</em>';if(acc)history.push({role:'assistant',content:acc});
+  }catch(e){a.className='turn err';body.innerHTML='⚠ '+esc(e.message)+' — is the agent on :8000?';}
+  finally{streaming=false;$('#send').disabled=false;$('#box').focus();if(cur==='audit')loadAudit();}
+}
+$('#send').onclick=()=>send();
+$('#box').addEventListener('input',()=>{const b=$('#box');b.style.height='auto';b.style.height=Math.min(b.scrollHeight,150)+'px';});
+$('#box').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
+$('#newchat').onclick=()=>{history=[];renderSuggest();go('assistant');};
+
+// boot
+async function ping(){try{const h=await(await fetch('/health')).json();$('#dot').className=h.mcp_connected?'on':'';$('#srclabel').textContent=h.mcp_connected?h.mcp_target:'offline';}catch{$('#srclabel').textContent='offline';}}
+renderSuggest();ping();loadOverview();
+</script>
+</body>
+</html>

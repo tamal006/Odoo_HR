@@ -1,0 +1,7 @@
+README.md
+pyproject.toml
+odoo_hr_agent.egg-info/PKG-INFO
+odoo_hr_agent.egg-info/SOURCES.txt
+odoo_hr_agent.egg-info/dependency_links.txt
+odoo_hr_agent.egg-info/requires.txt
+odoo_hr_agent.egg-info/top_level.txt

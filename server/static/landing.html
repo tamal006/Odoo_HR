@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Odoo HR · AI Copilot — approve with foresight</title>
+<style>
+:root{
+  --bg:#07080c; --panel:#0c0e15; --panel2:#10131c;
+  --line:rgba(255,255,255,.07); --line2:rgba(255,255,255,.13);
+  --ink:#f4f6fc; --dim:#a6adc6; --mut:#697088;
+  --v:#7dd3fc; --c:#56c7ff; --g:#45e0a0; --r:#ff5d7a; --amber:#f5b74a;
+  --blue:#7dd3fc; --grad:linear-gradient(100deg,#afe4ff 0%,#38bdf8 100%);
+  --mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+::selection{background:rgba(123,123,255,.35)}
+
+/* fine grid + orbs backdrop */
+.bg{position:fixed;inset:0;z-index:-2;
+  background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:62px 62px;
+  -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 78%);
+  mask-image:radial-gradient(ellipse 80% 60% at 50% 0%,#000 30%,transparent 78%);}
+.orb{position:fixed;z-index:-1;border-radius:50%;filter:blur(90px);opacity:.5;pointer-events:none}
+.orb.a{width:560px;height:560px;top:-220px;left:-120px;background:radial-gradient(circle,#2f9fe6,transparent 62%);animation:drift 18s ease-in-out infinite alternate;opacity:.42}
+.orb.b{width:520px;height:520px;top:-120px;right:-160px;background:radial-gradient(circle,#7dd3fc,transparent 62%);animation:drift 22s ease-in-out infinite alternate-reverse;opacity:.4}
+@keyframes drift{to{transform:translate(60px,50px) scale(1.1)}}
+
+.wrap{max-width:1140px;margin:0 auto;padding:0 26px}
+
+/* nav */
+nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(7,8,12,.72);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;height:64px;gap:26px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.2px}
+.brand .mark{width:30px;height:30px;border-radius:8px;background:var(--grad);display:grid;place-items:center;color:#06070d;font-weight:900;font-size:15px}
+.brand small{display:block;font-family:var(--mono);font-size:9.5px;font-weight:500;color:var(--mut);letter-spacing:1.4px;text-transform:uppercase;margin-top:1px}
+.navlinks{display:flex;gap:26px;margin-left:20px}
+.navlinks a{font-size:13.5px;color:var(--dim);transition:color .15s}
+.navlinks a:hover{color:var(--ink)}
+.navcta{margin-left:auto;display:flex;gap:10px}
+@media(max-width:820px){.navlinks{display:none}}
+
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:6px;padding:10px 17px;font-weight:600;font-size:13.5px;cursor:pointer;border:1px solid var(--line2);background:rgba(255,255,255,.02);color:var(--ink);transition:all .16s ease;white-space:nowrap}
+.btn:hover{border-color:rgba(125,211,252,.5);background:rgba(125,211,252,.06)}
+.btn.primary{background:var(--grad);color:#04121c;border:0;box-shadow:0 8px 26px -10px rgba(56,189,248,.7)}
+.btn.primary:hover{filter:brightness(1.06);box-shadow:0 12px 32px -10px rgba(56,189,248,.85)}
+.btn.lg{padding:13px 22px;font-size:14.5px}
+
+/* kicker chip */
+.kicker{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--dim);
+  border:1px solid var(--line);border-radius:6px;padding:6px 12px;background:rgba(255,255,255,.02)}
+.kicker::before{content:"";width:6px;height:6px;background:var(--blue);box-shadow:0 0 10px var(--blue)}
+
+/* hero */
+.hero{padding:78px 0 40px;position:relative}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:center}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:38px}}
+.hero h1{font-size:clamp(38px,5.4vw,62px);line-height:1.02;letter-spacing:-2px;font-weight:800;margin:22px 0 20px}
+.hero h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p.lead{font-size:17px;color:var(--dim);max-width:33ch;line-height:1.6}
+.hero .cta{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+.hero .sub{margin-top:26px;display:flex;gap:26px;flex-wrap:wrap}
+.hero .sub div{font-family:var(--mono)}
+.hero .sub b{font-size:22px;font-weight:700;letter-spacing:-.5px;display:block}
+.hero .sub span{font-size:11px;color:var(--mut);letter-spacing:.4px}
+
+/* hero visual: live impact preview card */
+.viz{position:relative;border:1px solid var(--line2);border-radius:16px;background:linear-gradient(180deg,var(--panel2),var(--panel));padding:20px;box-shadow:0 40px 90px -40px rgba(0,0,0,.9)}
+.viz::before{content:"";position:absolute;inset:-1px;border-radius:14px;padding:1px;background:linear-gradient(120deg,rgba(125,211,252,.55),transparent 40%,transparent 60%,rgba(56,189,248,.4));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:.75}
+.viz .vtop{display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.6px;margin-bottom:4px}
+.viz .vtop .dotset{display:flex;gap:5px;margin-right:4px}
+.viz .vtop .dotset i{width:9px;height:9px;border-radius:50%;background:#2a2e3c;display:inline-block}
+.viz h4{font-size:15px;letter-spacing:-.2px;margin:8px 0 3px}
+.viz .vsub{font-size:12px;color:var(--mut);font-family:var(--mono)}
+.bars{display:flex;gap:6px;align-items:flex-end;height:104px;margin:18px 0 10px}
+.bars .b{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.bars .b .bar{width:100%;border-radius:4px 4px 2px 2px;background:var(--g);height:88%;transition:height .6s cubic-bezier(.22,1,.36,1),background .35s}
+.bars .b small{font-family:var(--mono);font-size:9px;color:var(--mut)}
+.verdict{display:flex;gap:9px;align-items:flex-start;font-size:12.5px;line-height:1.45;padding:11px 13px;border-radius:10px;border:1px solid;transition:all .35s}
+.verdict.ok{background:rgba(69,224,160,.07);border-color:rgba(69,224,160,.22);color:#8ff0c6}
+.verdict.bad{background:rgba(255,93,122,.08);border-color:rgba(255,93,122,.25);color:#ffa6b6}
+.verdict svg{flex:none;margin-top:1px}
+
+/* strip */
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:46px}
+.strip .wrap{display:flex;justify-content:space-between;gap:20px;padding:24px 26px;flex-wrap:wrap}
+.stat{font-family:var(--mono)}
+.stat b{font-size:26px;font-weight:700;letter-spacing:-1px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{display:block;font-size:11px;color:var(--mut);letter-spacing:.5px;margin-top:3px}
+
+/* sections */
+section.blk{padding:88px 0}
+.eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;color:var(--c)}
+.h2{font-size:clamp(26px,3.4vw,38px);letter-spacing:-1px;font-weight:800;margin:14px 0 16px;line-height:1.1}
+.sec-lead{color:var(--dim);max-width:56ch;font-size:15.5px}
+
+/* problem/solution split */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:40px}
+@media(max-width:820px){.split{grid-template-columns:1fr}}
+.pane{border:1px solid var(--line);border-radius:15px;padding:26px;background:var(--panel)}
+.pane .tag{font-family:var(--mono);font-size:11px;letter-spacing:1px;text-transform:uppercase}
+.pane.bad .tag{color:var(--mut)} .pane.good .tag{color:var(--g)}
+.pane h3{font-size:19px;margin:12px 0 10px;letter-spacing:-.3px}
+.pane p{color:var(--dim);font-size:14.5px;line-height:1.6}
+.pane.good{background:linear-gradient(180deg,rgba(69,224,160,.05),var(--panel));border-color:rgba(69,224,160,.2)}
+
+/* innovation cards */
+.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:44px}
+@media(max-width:820px){.cards{grid-template-columns:1fr}}
+.card{position:relative;border:1px solid var(--line);border-radius:15px;padding:24px;background:var(--panel);overflow:hidden;transition:border-color .2s,transform .2s}
+.card:hover{border-color:var(--line2);transform:translateY(-3px)}
+.card:hover::after{opacity:1}
+.card::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:var(--grad);opacity:0;transition:opacity .25s}
+.card .ico{width:40px;height:40px;border-radius:10px;border:1px solid var(--line2);display:grid;place-items:center;color:var(--c);margin-bottom:16px;background:rgba(255,255,255,.02)}
+.card .num{position:absolute;top:20px;right:22px;font-family:var(--mono);font-size:12px;color:var(--mut)}
+.card h3{font-size:17px;letter-spacing:-.3px;margin-bottom:8px}
+.card p{color:var(--dim);font-size:14px;line-height:1.6}
+.card .foot{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:.4px;border-top:1px solid var(--line);padding-top:12px}
+
+/* architecture */
+.arch{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+@media(max-width:820px){.arch{grid-template-columns:1fr}}
+.tier{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--panel);position:relative}
+.tier .n{font-family:var(--mono);font-size:11px;color:var(--mut);letter-spacing:1px}
+.tier h4{font-size:16px;margin:9px 0 8px;letter-spacing:-.2px}
+.tier code{font-family:var(--mono);font-size:11.5px;color:var(--c);background:rgba(52,226,228,.08);padding:2px 7px;border-radius:5px}
+.tier p{color:var(--dim);font-size:13.5px;margin-top:10px;line-height:1.55}
+
+/* cta */
+.final{border:1px solid var(--line2);border-radius:20px;margin:0 0 40px;padding:56px 40px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(180deg,var(--panel2),var(--panel))}
+.final::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 100% at 50% 0%,rgba(56,189,248,.15),transparent 70%)}
+.final h2{position:relative}
+.final .cta{position:relative;display:flex;gap:12px;justify-content:center;margin-top:26px;flex-wrap:wrap}
+footer{border-top:1px solid var(--line);padding:26px 0;color:var(--mut);font-size:12.5px;font-family:var(--mono)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+.rv.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="orb a"></div><div class="orb b"></div>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><div class="mark">◧</div><div>Odoo HR<small>AI COPILOT</small></div></div>
+    <div class="navlinks">
+      <a href="#problem">Problem</a>
+      <a href="#innovations">Capabilities</a>
+      <a href="#architecture">Architecture</a>
+    </div>
+    <div class="navcta">
+      <a class="btn" href="/console">Open console</a>
+      <a class="btn primary" href="http://localhost:5173">Launch app</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero"><div class="wrap hero-grid">
+  <div>
+    <span class="kicker">AI-native HR on Odoo</span>
+    <h1>Approve leave with <span class="grad">foresight</span>, not guesswork.</h1>
+    <p class="lead">Odoo shows you who's off. Our copilot tells you what happens <em>if you approve</em> — before you do. Predictive, explainable, human-gated.</p>
+    <div class="cta">
+      <a class="btn primary lg" href="/console">Open the console →</a>
+      <a class="btn lg" href="#innovations">How it works</a>
+    </div>
+    <div class="sub">
+      <div><b data-count="8">0</b><span>WEEK FORECAST</span></div>
+      <div><b data-count="0">0</b><span>BLIND APPROVALS</span></div>
+      <div><b data-count="100" data-suffix="%">0</b><span>TOOL CALLS AUDITED</span></div>
+    </div>
+  </div>
+
+  <div class="viz" id="viz">
+    <div class="vtop"><div class="dotset"><i></i><i></i><i></i></div> impact_preview.sim</div>
+    <h4 id="viz-title">Team capacity · Engineering</h4>
+    <div class="vsub" id="viz-sub">next 8 weeks · live coverage</div>
+    <div class="bars" id="bars"></div>
+    <div class="verdict ok" id="verdict">
+      <svg id="vicon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6 9 17l-5-5"/></svg>
+      <span id="verdict-txt">Coverage healthy across the quarter.</span>
+    </div>
+  </div>
+</div></header>
+
+<div class="strip"><div class="wrap">
+  <div class="stat"><b data-count="4">0</b><span>DATA SOURCES · LEAVE · ATTENDANCE · CONTRACT · CAPACITY</span></div>
+  <div class="stat"><b>&lt; 1s</b><span>FORECAST LATENCY</span></div>
+  <div class="stat"><b data-count="5">0</b><span>PREDICTIVE MODELS</span></div>
+  <div class="stat"><b>MCP</b><span>NATIVE ODOO PROTOCOL</span></div>
+</div></div>
+
+<section class="blk" id="problem"><div class="wrap">
+  <div class="rv">
+    <span class="eyebrow">The gap</span>
+    <h2 class="h2">Odoo approvals happen blind.</h2>
+    <p class="sec-lead">Odoo's own docs note leave visibility is role-gated and that "poorly managed leave policies lead to understaffing." A manager sees a request — not the second-order consequence of granting it.</p>
+  </div>
+  <div class="split">
+    <div class="pane bad rv">
+      <div class="tag">Odoo today</div>
+      <h3>A calendar of who's out.</h3>
+      <p>You approve, then find out three teammates overlap and the sprint week is uncovered. No forecast, no coverage math, no warning. The cost shows up later as burnout and missed deadlines.</p>
+    </div>
+    <div class="pane good rv">
+      <div class="tag">With Impact Preview</div>
+      <h3>The consequence, before you act.</h3>
+      <p>The copilot re-simulates the 8-week capacity timeline as if the leave were approved, diffs it against now, and flags the week that crosses the floor — so you stagger it, not regret it.</p>
+    </div>
+  </div>
+</div></section>
+
+<section class="blk" id="innovations"><div class="wrap">
+  <div class="rv">
+    <span class="eyebrow">Capabilities</span>
+    <h2 class="h2">Not a dashboard. A decision engine.</h2>
+    <p class="sec-lead">The LLM orchestrates deterministic predictors — it reasons over the numbers instead of hallucinating them. Every output is explainable and every write is gated.</p>
+  </div>
+  <div class="cards">
+    <div class="card rv"><div class="num">01</div>
+      <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 3v18h18"/><path d="m7 15 4-5 3 3 4-6"/></svg></div>
+      <h3>Impact Preview</h3>
+      <p>Counterfactual simulation of an approval — the before→after coverage of your team, week by week, so you never approve into an understaffed sprint.</p>
+      <div class="foot">simulate_approval() · counterfactual</div>
+    </div>
+    <div class="card rv"><div class="num">02</div>
+      <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <h3>Predictive core</h3>
+      <p>Leave burn-rate projected to a year-end balance and exhaustion date, plus a 0–100 burnout signal from attendance. Tunable, transparent, unit-tested models.</p>
+      <div class="foot">intelligence.py · 5 models</div>
+    </div>
+    <div class="card rv"><div class="num">03</div>
+      <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+      <h3>Hard-gated copilot</h3>
+      <p>A scored APPROVE / REVIEW / CAUTION recommendation with reasons — and it never writes to Odoo without an explicit human confirm. RBAC enforced in code, not just the prompt.</p>
+      <div class="foot">rbac_denial() · survives jailbreaks</div>
+    </div>
+    <div class="card rv"><div class="num">04</div>
+      <div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <h3>Full audit trail</h3>
+      <p>Every tool call logged as request → action → who confirmed. Transparency Odoo's approval flow doesn't surface, rendered next to each record.</p>
+      <div class="foot">/agent/audit · request → action → confirm</div>
+    </div>
+  </div>
+</div></section>
+
+<section class="blk" id="architecture"><div class="wrap">
+  <div class="rv">
+    <span class="eyebrow">Architecture</span>
+    <h2 class="h2">Three tiers. One Odoo truth.</h2>
+    <p class="sec-lead">The React app talks to an Express backend for CRUD and to a Python agent for intelligence. Both read the same Odoo — the backend over XML-RPC, the agent over the Model Context Protocol.</p>
+  </div>
+  <div class="arch">
+    <div class="tier rv"><div class="n">01 · UI</div><h4>React + Vite</h4><code>:5173</code><p>Clerk auth, the HR suite, and the AI Copilot page — streaming chat, live forecasts, Impact Preview.</p></div>
+    <div class="tier rv"><div class="n">02 · CRUD</div><h4>Express + XML-RPC</h4><code>:5000</code><p>Typed routes over Odoo's HR models. Odoo stays the single source of truth — nothing duplicated.</p></div>
+    <div class="tier rv"><div class="n">03 · INTELLIGENCE</div><h4>Python + MCP + Claude</h4><code>:8000</code><p>The agent: tool-calling over MCP, the predictive core, the approval gate, the audit trail.</p></div>
+  </div>
+</div></section>
+
+<section class="blk"><div class="wrap">
+  <div class="final rv">
+    <span class="eyebrow" style="position:relative">Ready</span>
+    <h2 class="h2" style="margin-top:14px">See it approve — with foresight.</h2>
+    <p class="sec-lead" style="margin:0 auto;position:relative">Boots against a local Odoo stand-in. No credentials, no setup. Point it at real Odoo with one env var.</p>
+    <div class="cta">
+      <a class="btn primary lg" href="/console">Open the console →</a>
+      <a class="btn lg" href="/health">Agent status</a>
+    </div>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <span>ODOO HR · AI COPILOT</span>
+  <span>CLAUDE · MCP · FASTAPI · REACT</span>
+</div></footer>
+
+<script>
+// reveal on scroll
+const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.14});
+document.querySelectorAll('.rv').forEach(el=>io.observe(el));
+
+// count-up
+function countUp(el){const to=+el.dataset.count,suf=el.dataset.suffix||'';let s=null;
+  const step=t=>{if(!s)s=t;const k=Math.min(1,(t-s)/900);el.textContent=Math.round(to*(1-Math.pow(1-k,3)))+suf;if(k<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+const cio=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){countUp(e.target);cio.unobserve(e.target)}}),{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=>cio.observe(el));
+
+// live impact-preview animation in hero
+const WEEKS=['Jun29','Jul06','Jul13','Jul20','Jul27','Aug03','Aug10','Aug17'];
+const BASE=[100,100,100,100,100,100,100,100];      // healthy
+const AFTER=[100,100,50,100,100,100,100,100];       // approving #101 tips Jul13
+const bars=document.getElementById('bars');
+WEEKS.forEach(w=>{const b=document.createElement('div');b.className='b';b.innerHTML='<div class="bar"></div><small>'+w.slice(3)+'</small>';bars.appendChild(b)});
+const barEls=[...bars.querySelectorAll('.bar')];
+const col=v=>v>=70?'var(--g)':v>=50?'var(--amber)':'var(--r)';
+function paint(vals){vals.forEach((v,i)=>{barEls[i].style.height=Math.max(8,v)+'%';barEls[i].style.background=col(v)})}
+const vt=document.getElementById('verdict'),vx=document.getElementById('verdict-txt'),vs=document.getElementById('viz-sub'),vi=document.getElementById('vicon');
+const OKICON='<path d="M20 6 9 17l-5-5"/>',WARNICON='<path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>';
+let phase=0;
+function cycle(){
+  if(phase%2===0){paint(BASE);vt.className='verdict ok';vi.innerHTML=OKICON;vx.textContent='Coverage healthy — nothing pending resolved yet.';vs.textContent='next 8 weeks · current state';}
+  else{paint(AFTER);vt.className='verdict bad';vi.innerHTML=WARNICON;vx.innerHTML='Approving leave <b>#101</b> drops the week of <b>Jul 13</b> to 50% — below the coverage floor.';vs.textContent='simulating: approve #101 · Ananya Roy';}
+  phase++;
+}
+paint(BASE);setTimeout(cycle,900);setInterval(cycle,3200);
+</script>
+</body>
+</html>

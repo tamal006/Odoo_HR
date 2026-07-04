@@ -1,0 +1,16 @@
+[project]
+name = "odoo-hr-agent"
+version = "0.2.0"
+description = "Phase 2: FastAPI agent layer — HR persona, streaming chat, approval copilot, audit trail."
+requires-python = ">=3.10"
+dependencies = [
+    "groq>=0.12.0",
+    "mcp>=1.9.4",
+    "python-dotenv>=1.0.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+]
+
+[project.optional-dependencies]
+# Only the end-to-end LLM safety test needs an HTTP client.
+dev = ["aiohttp>=3.9.0"]
