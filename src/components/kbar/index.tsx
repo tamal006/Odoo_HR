@@ -20,7 +20,7 @@ export default function KBar({ children }: { children: React.ReactNode }) {
 
     const allItems = filteredGroups.flatMap((group) => group.items);
 
-    return allItems.flatMap((navItem) => {
+    const dynamicActions = allItems.flatMap((navItem) => {
       // Only include base action if the navItem has a real URL and is not just a container
       const baseAction =
         navItem.url !== '#'
@@ -50,6 +50,18 @@ export default function KBar({ children }: { children: React.ReactNode }) {
       // Return only valid actions (ignoring null base actions for containers)
       return baseAction ? [baseAction, ...childActions] : childActions;
     });
+
+    const aiAction = {
+      id: 'askAiAction',
+      name: 'Ask AI',
+      shortcut: ['a', 'i'],
+      keywords: 'ask ai chat help assistant',
+      section: 'Actions',
+      subtitle: 'Open the AI Chat panel',
+      perform: () => window.dispatchEvent(new CustomEvent('open-ai-chat'))
+    };
+
+    return [aiAction, ...dynamicActions];
   }, [router, filteredGroups]);
 
   return (

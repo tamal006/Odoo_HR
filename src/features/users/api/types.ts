@@ -1,4 +1,6 @@
-export type { User } from '@/constants/mock-api-users';
+import { Employee } from '@/lib/api';
+
+export type User = Employee;
 
 export type UserFilters = {
   page?: number;
@@ -15,14 +17,7 @@ export type UsersResponse = {
   total_users: number;
   offset: number;
   limit: number;
-  users: import('@/constants/mock-api-users').User[];
+  users: Employee[];
 };
 
-export type UserMutationPayload = {
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-  role: string;
-  status: string;
-};
+export type UserMutationPayload = Partial<Employee>;

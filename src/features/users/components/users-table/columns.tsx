@@ -10,15 +10,13 @@ import { ROLE_OPTIONS } from './options';
 export const columns: ColumnDef<User>[] = [
   {
     id: 'name',
-    accessorFn: (row) => `${row.first_name} ${row.last_name}`,
+    accessorFn: (row) => row.name,
     header: ({ column }: { column: Column<User, unknown> }) => (
       <DataTableColumnHeader column={column} title='Name' />
     ),
     cell: ({ row }) => (
       <div className='flex flex-col'>
-        <span className='font-medium'>
-          {row.original.first_name} {row.original.last_name}
-        </span>
+        <span className='font-medium'>{row.original.name}</span>
         <span className='text-muted-foreground text-xs'>{row.original.email}</span>
       </div>
     ),
@@ -56,17 +54,21 @@ export const columns: ColumnDef<User>[] = [
     }
   },
   {
-    accessorKey: 'status',
-    header: 'STATUS',
-    cell: ({ cell }) => {
-      const status = cell.getValue<User['status']>();
-      const variant =
-        status === 'Active' ? 'default' : status === 'Inactive' ? 'secondary' : 'outline';
-      return <Badge variant={variant}>{status}</Badge>;
-    }
+    accessorKey: 'department',
+    header: 'DEPARTMENT'
   },
   {
     id: 'actions',
-    cell: ({ row }) => <CellAction data={row.original} />
+    cell: ({ row }) => (
+      <div className='flex items-center gap-2'>
+        <a
+          href={`/dashboard/profile?id=${row.original.id}`}
+          className='text-primary text-sm hover:underline font-medium'
+        >
+          View
+        </a>
+        <CellAction data={row.original} />
+      </div>
+    )
   }
 ];

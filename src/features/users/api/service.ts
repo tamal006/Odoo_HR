@@ -27,21 +27,47 @@
 // Current: Mock (in-memory fake data for demo/prototyping)
 // ============================================================
 
-import { fakeUsers } from '@/constants/mock-api-users';
+import { getEmployees } from '@/lib/api';
 import type { UserFilters, UsersResponse, UserMutationPayload } from './types';
 
 export async function getUsers(filters: UserFilters): Promise<UsersResponse> {
-  return fakeUsers.getUsers(filters);
+  const employees = await getEmployees();
+
+  let filtered = employees;
+  if (filters.search) {
+    const s = filters.search.toLowerCase();
+    filtered = filtered.filter(
+      (e) => e.name.toLowerCase().includes(s) || e.email.toLowerCase().includes(s)
+    );
+  }
+  if (filters.roles) {
+    const roles = filters.roles.split('.');
+    filtered = filtered.filter((e) => roles.includes(e.role));
+  }
+
+  const page = filters.page || 1;
+  const limit = filters.limit || 10;
+  const offset = (page - 1) * limit;
+
+  return {
+    success: true,
+    time: new Date().toISOString(),
+    message: 'Success',
+    total_users: filtered.length,
+    offset,
+    limit,
+    users: filtered.slice(offset, offset + limit)
+  };
 }
 
 export async function createUser(data: UserMutationPayload) {
-  return fakeUsers.createUser(data);
+  return null;
 }
 
-export async function updateUser(id: number, data: UserMutationPayload) {
-  return fakeUsers.updateUser(id, data);
+export async function updateUser(id: string, data: UserMutationPayload) {
+  return null;
 }
 
-export async function deleteUser(id: number) {
-  return fakeUsers.deleteUser(id);
+export async function deleteUser(id: string) {
+  return null;
 }

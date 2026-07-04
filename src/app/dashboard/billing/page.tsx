@@ -3,7 +3,6 @@
 import PageContainer from '@/components/layout/page-container';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useOrganization } from '@clerk/nextjs';
-import { PricingTable } from '@clerk/nextjs';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Icons } from '@/components/icons';
 import { billingInfoContent } from '@/config/infoconfig';
@@ -39,7 +38,7 @@ export default function BillingPage() {
           </AlertDescription>
         </Alert>
 
-        {/* Clerk Pricing Table */}
+        {/* Mock Pricing Placeholder */}
         <Card>
           <CardHeader>
             <CardTitle>Available Plans</CardTitle>
@@ -47,7 +46,15 @@ export default function BillingPage() {
           </CardHeader>
           <CardContent>
             <div className='mx-auto max-w-4xl'>
-              <PricingTable for='organization' />
+              <div className='text-center p-12 border border-dashed rounded-lg bg-muted/20'>
+                <Icons.billing className='mx-auto h-12 w-12 text-muted-foreground mb-4' />
+                <h3 className='text-xl font-medium'>Billing & Subscriptions</h3>
+                <p className='text-muted-foreground mt-2 max-w-md mx-auto'>
+                  Billing features are currently disabled in this mock environment. When connected
+                  to the live backend, you will be able to manage your organization's active plan,
+                  usage, and invoices here.
+                </p>
+              </div>
             </div>
           </CardContent>
         </Card>
