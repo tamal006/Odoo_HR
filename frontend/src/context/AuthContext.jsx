@@ -5,6 +5,8 @@ const AuthContext = createContext(null);
 
 // List of admin emails
 const ADMIN_EMAILS = [
+  'soumyajit.roy@gmail.com',
+  'soumyajit.roy@company.com',
   'tamalkumarkhan006@gmail.com',
   'admin@company.com'
 ];
@@ -23,7 +25,7 @@ export const AuthProvider = ({ children }) => {
 
   // Check for existing session on mount — default to HR Manager
   useEffect(() => {
-    const defaultEmail = 'tamalkumarkhan006@gmail.com';
+    const defaultEmail = 'soumyajit.roy@gmail.com';
     const savedEmail = localStorage.getItem('hrms_user_email') || defaultEmail;
     localStorage.setItem('hrms_user_email', savedEmail);
     resolveOdooIdentity(savedEmail);
@@ -51,14 +53,18 @@ export const AuthProvider = ({ children }) => {
         try {
           const detailsRes = await apiClient.get(`/employees/${res.employeeId}`);
           if (detailsRes.success && detailsRes.data) {
-            setEmployeeDetails(detailsRes.data);
+            const data = detailsRes.data;
+            if (email.toLowerCase().includes('soumyajit') || email.toLowerCase().includes('sroy')) {
+              data.name = "Soumyajit Roy (HR Manager)";
+            }
+            setEmployeeDetails(data);
           } else {
             throw new Error("Empty details");
           }
         } catch (detailErr) {
           setEmployeeDetails({
             id: res.employeeId,
-            name: res.name || "Tamal Kumar Khan (HR Manager)",
+            name: "Soumyajit Roy (HR Manager)",
             email: email,
             department: res.department || "Human Resources",
             jobTitle: res.jobTitle || "Chief HR Officer & Admin",
@@ -77,7 +83,7 @@ export const AuthProvider = ({ children }) => {
       setIsSignedIn(true);
       setEmployeeDetails({
         id: 1,
-        name: "Tamal Kumar Khan (HR Manager)",
+        name: "Soumyajit Roy (HR Manager)",
         email: email,
         department: "Human Resources",
         jobTitle: "Chief HR Officer & Admin",

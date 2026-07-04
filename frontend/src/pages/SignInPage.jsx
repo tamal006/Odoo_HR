@@ -37,53 +37,38 @@ export default function SignInPage() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'radial-gradient(circle at top left, #1c1117, #0f0a0d 60%)',
+      background: '#ffffff',
       padding: '20px',
-      position: 'relative',
-      overflow: 'hidden'
+      position: 'relative'
     }}>
-      {/* Decorative Blur Orbs */}
-      <div style={{
-        position: 'absolute', top: '-10%', left: '-10%',
-        width: '50vw', height: '50vw', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(244, 114, 182, 0.12) 0%, rgba(244, 114, 182, 0) 70%)',
-        filter: 'blur(40px)', zIndex: 0
-      }} />
-      <div style={{
-        position: 'absolute', bottom: '-10%', right: '-10%',
-        width: '50vw', height: '50vw', borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(251, 113, 133, 0.1) 0%, rgba(251, 113, 133, 0) 70%)',
-        filter: 'blur(40px)', zIndex: 0
-      }} />
-
       <div style={{ zIndex: 1, width: '100%', maxWidth: '440px' }} className="animate-fade-in">
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <div style={{
-            width: '48px', height: '48px', borderRadius: '12px',
-            background: 'var(--primary-gradient)',
+            width: '48px', height: '48px', borderRadius: '8px',
+            background: '#000000', border: '1px solid #000000',
             display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: 'bold', fontSize: '1.5rem', color: '#fff',
-            marginBottom: '16px', boxShadow: '0 4px 20px rgba(244, 114, 182, 0.35)'
+            fontWeight: 'bold', fontSize: '1.5rem', color: '#ffffff',
+            marginBottom: '16px', boxShadow: '2px 2px 0px 0px #000000'
           }}>
             Ω
           </div>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#fff' }}>Welcome Back</h2>
-          <p style={{ color: 'var(--text-secondary)', marginTop: '8px' }}>Log in to access your Odoo HR portal</p>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: '700', color: '#000000' }}>Welcome Back</h2>
+          <p style={{ color: '#404040', marginTop: '8px' }}>Log in to access your Odoo HR portal</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '32px' }}>
+        <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '32px', background: '#ffffff', border: '2px solid #000000', boxShadow: '4px 4px 0px 0px #000000' }}>
           {error && (
             <div style={{
               padding: '12px 16px', borderRadius: '8px', marginBottom: '20px',
-              background: 'rgba(244, 63, 94, 0.1)', border: '1px solid rgba(244, 63, 94, 0.2)',
-              color: '#fda4af', fontSize: '0.875rem'
+              background: '#ffffff', border: '1px solid #000000',
+              color: '#000000', fontSize: '0.875rem', fontWeight: '600'
             }}>
-              {error}
+              ⚠️ {error}
             </div>
           )}
 
           <div style={{ marginBottom: '20px' }}>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem', fontWeight: '600', color: '#000000' }}>
               Email Address
             </label>
             <input
@@ -94,16 +79,15 @@ export default function SignInPage() {
               className="form-input"
               style={{
                 width: '100%', padding: '12px 16px', borderRadius: '8px',
-                background: 'rgba(255,255,255,0.04)', border: '1px solid var(--panel-border)',
-                color: '#fff', fontSize: '0.95rem', outline: 'none',
-                transition: 'border-color 0.2s'
+                background: '#ffffff', border: '1px solid #000000',
+                color: '#000000', fontSize: '0.95rem', outline: 'none'
               }}
               autoFocus
             />
           </div>
 
           <div style={{ marginBottom: '24px' }}>
-            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-secondary)' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontSize: '0.875rem', fontWeight: '600', color: '#000000' }}>
               Password
             </label>
             <input
@@ -113,9 +97,8 @@ export default function SignInPage() {
               placeholder="••••••••"
               style={{
                 width: '100%', padding: '12px 16px', borderRadius: '8px',
-                background: 'rgba(255,255,255,0.04)', border: '1px solid var(--panel-border)',
-                color: '#fff', fontSize: '0.95rem', outline: 'none',
-                transition: 'border-color 0.2s'
+                background: '#ffffff', border: '1px solid #000000',
+                color: '#000000', fontSize: '0.95rem', outline: 'none'
               }}
             />
           </div>
@@ -123,16 +106,18 @@ export default function SignInPage() {
           <button
             type="button"
             onClick={async () => {
-              await login('tamalkumarkhan006@gmail.com');
+              await login('soumyajit.roy@gmail.com');
               navigate('/');
             }}
             className="btn btn-secondary"
             style={{
-              width: '100%', padding: '12px', fontSize: '0.9rem', fontWeight: '600',
-              cursor: 'pointer', justifyContent: 'center', marginBottom: '12px'
+              width: '100%', padding: '12px', fontSize: '0.9rem', fontWeight: '700',
+              cursor: 'pointer', justifyContent: 'center', marginBottom: '12px',
+              background: '#ffffff', border: '1px solid #000000', color: '#000000',
+              boxShadow: '2px 2px 0px 0px #000000'
             }}
           >
-            ⚡ Log in as HR Manager (Admin)
+            ⚡ Log in as Soumyajit Roy (HR Manager)
           </button>
 
           <button
@@ -140,17 +125,18 @@ export default function SignInPage() {
             className="btn btn-primary"
             disabled={loading}
             style={{
-              width: '100%', padding: '14px', fontSize: '1rem', fontWeight: '600',
+              width: '100%', padding: '14px', fontSize: '1rem', fontWeight: '700',
               cursor: loading ? 'wait' : 'pointer', opacity: loading ? 0.7 : 1,
-              justifyContent: 'center'
+              justifyContent: 'center', background: '#000000', color: '#ffffff',
+              border: '1px solid #000000', boxShadow: '2px 2px 0px 0px #000000'
             }}
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
 
-          <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+          <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.875rem', color: '#404040' }}>
             Don't have an account?{' '}
-            <Link to="/sign-up" style={{ color: 'var(--primary)', fontWeight: '500' }}>Sign Up</Link>
+            <Link to="/sign-up" style={{ color: '#000000', fontWeight: '700', textDecoration: 'underline' }}>Sign Up</Link>
           </p>
         </form>
       </div>

@@ -66,8 +66,8 @@ function CapabilityStrip() {
       {CAPABILITIES.map(({ icon: Icon, label, tip }) => (
         <div key={label} title={tip}
           style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '6px 12px', borderRadius: 999,
-            background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.15)', fontSize: 12.5, fontWeight: 600, color: '#e5e5e5' }}>
-          <Icon size={14} /> {label}
+            background: '#ffffff', border: '1px solid #000000', fontSize: 12.5, fontWeight: 700, color: '#000000', boxShadow: '2px 2px 0px 0px #000000' }}>
+          <Icon size={14} color="#000000" /> {label}
         </div>
       ))}
     </div>
@@ -152,8 +152,8 @@ export default function CopilotPage() {
   const role = auth.role || 'admin';
   const identity = {
     role,
-    employee_id: auth.employeeId ? Number(auth.employeeId) : 3,
-    employee_name: auth.employeeDetails?.name || auth.email || 'Priya Nair',
+    employee_id: auth.employeeId ? Number(auth.employeeId) : 1,
+    employee_name: auth.employeeDetails?.name || auth.email || 'Soumyajit Roy (HR Manager)',
   };
 
   const [messages, setMessages] = useState([]);       // {role, content}
@@ -218,24 +218,26 @@ export default function CopilotPage() {
       `}</style>
 
       {/* header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 44, height: 44, borderRadius: 8, background: '#000000', border: '1px solid #000000', display: 'grid', placeItems: 'center', boxShadow: '2px 2px 0px 0px #000000' }}>
-            <Sparkles size={22} color="#ffffff" />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 44, height: 44, borderRadius: 8, background: '#000000', border: '1px solid #000000', display: 'grid', placeItems: 'center', boxShadow: '2px 2px 0px 0px #000000', flexShrink: 0 }}>
+              <Sparkles size={22} color="#ffffff" />
+            </div>
+            <div>
+              <h1 style={{ fontSize: '1.35rem', fontWeight: 700, letterSpacing: '-0.3px', color: '#000000', margin: 0 }}>AI Copilot</h1>
+              <div style={{ fontSize: 12.5, color: '#404040' }}>Reads your Odoo HR through MCP · forecasts · never writes without you</div>
+            </div>
           </div>
-          <div>
-            <h1 style={{ fontSize: '1.35rem', fontWeight: 700, letterSpacing: '-0.3px', color: '#000000' }}>AI Copilot</h1>
-            <div style={{ fontSize: 12.5, color: 'var(--text-secondary)' }}>Reads your Odoo HR through MCP · forecasts · never writes without you</div>
-          </div>
-        </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: 10, alignItems: 'center' }}>
-          <CapabilityStrip />
           <div title={connected ? `Live data source: ${target || 'Odoo via MCP'}` : 'Agent offline'}
             style={{ display: 'flex', alignItems: 'center', gap: 7, padding: '6px 12px', borderRadius: 999,
-              background: connected ? 'rgba(255,255,255,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${connected ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.1)'}`, fontSize: 12, fontWeight: 600, color: connected ? '#ffffff' : '#71717a' }}>
-            <span style={{ width: 7, height: 7, borderRadius: 999, background: connected ? '#ffffff' : '#71717a', display: 'inline-block' }} />
+              background: '#ffffff', border: '1px solid #000000', fontSize: 12, fontWeight: 700, color: '#000000', boxShadow: '2px 2px 0px 0px #000000' }}>
+            <span style={{ width: 8, height: 8, borderRadius: 999, background: connected ? '#000000' : '#737373', display: 'inline-block' }} />
             {connected ? `Live · ${target || 'Odoo'}` : 'Agent offline'}
           </div>
+        </div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', paddingTop: 2 }}>
+          <CapabilityStrip />
         </div>
       </div>
 
